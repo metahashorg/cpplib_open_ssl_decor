@@ -2,11 +2,10 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+
 #include <openssl/evp.h>
 
 #include "crypto.h"
-
-#include <pthread.h>
 
 using namespace std;
 

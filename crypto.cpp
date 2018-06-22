@@ -169,7 +169,10 @@ inline void crypto_dump_public_key(
 }
 
 
-void crypto_load_key(const std::vector<unsigned char> &key_buf, bool pubkey, EVP_PKEY **ppkey)
+void crypto_load_key(
+  const std::vector<unsigned char> &key_buf,
+  bool pubkey,
+  EVP_PKEY **ppkey)
 {
   // create a place to dump the IO, in this case in memory
   BIO *bio = BIO_new_mem_buf(key_buf.data(), key_buf.size());
