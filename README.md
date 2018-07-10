@@ -52,12 +52,24 @@ bool CRYPTO_check_sign_data(
   const std::vector<unsigned char>& data);
 ```
 
-`CRYPTO_generate_wallet` builds new wallet. Wallet is represented by 3 strings: private and public key and wallet address.
-`CRYPTO_wallet` struct can be used to hide that fact. `$password` argument is optional and not implemented in that version.
+`CRYPTO_generate_wallet`
+> builds new wallet. 
+>
+> Wallet is represented by 3 strings: private and public key and wallet address.
 
-`CRYPTO_init_wallet` builds `CRYPTO_wallet` struct variable with help of given values.
+`CRYPTO_wallet` 
+> struct can be used to hide that fact. 
+> 
+> `$password` argument is optional and not implemented in that version.
 
-`CRYPTO_sign_data` uses private key to build a signature for given binary data.
-`CRYPTO_check_sign_data` uses public key to check if given signature matches data and returns appropriate boolean result.
+`CRYPTO_init_wallet` 
+> builds `CRYPTO_wallet` struct variable with help of given values.
 
-`CRYPTO_sign_text` and `CRYPTO_check_sign_text` are similar to previous functions but designed to work with text data.
+`CRYPTO_sign_data` 
+> uses private key to build a signature for given binary data.
+
+`CRYPTO_check_sign_data` 
+> uses public key to check if given signature matches data and returns appropriate boolean result.
+
+`CRYPTO_sign_text` and `CRYPTO_check_sign_text` 
+> They are similar to previous functions but designed to work with text data.
