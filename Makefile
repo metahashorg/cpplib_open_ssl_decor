@@ -1,6 +1,6 @@
 TARGET = test
 
-LIBS = -lcrypto
+LIBS = -l:libcrypto.so.1.1
 LIBDIRS =
 
 CXXSOURCES = $(wildcard *.cpp)

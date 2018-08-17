@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
     cout << "----------------------------" << endl;
 
-    cout << "Generate public from private" << endl;
+    cout << "Generate public from private.." << endl;
     string public_key_new;
     CRYPTO_generate_public(private_key, public_key_new);
     if(public_key == public_key_new)
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     else
       cout << "Public key does not match" << endl;
 
-    cout << "Generate address from public" << endl;
+    cout << "Generate address from public.." << endl;
     string mh_address_new;
     CRYPTO_generate_address(public_key_new, mh_address_new);
     if(mh_address == mh_address_new)
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     else
       cout << "Address does not match" << endl;
 
-    cout << "Verifying address" << endl;
+    cout << "Verifying address.." << endl;
     if(CRYPTO_check_address(mh_address_new))
       cout << "Address good" << endl;
     else
