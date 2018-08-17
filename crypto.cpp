@@ -182,14 +182,14 @@ void crypto_load_key(
   try {
     if(pubkey)
     {
-      // dump key buf to IO
+      // dump key buf from IO
       *ppkey = d2i_PUBKEY_bio(bio, NULL);
       if(!*ppkey)
         throw std::runtime_error("Cannot load public key from BIO");
     }
     else
     {
-      // dump key buf to IO
+      // dump key buf from IO
       *ppkey = d2i_PrivateKey_bio(bio, NULL);
       if(!*ppkey)
         throw std::runtime_error("Cannot load private key from BIO");
@@ -275,7 +275,6 @@ void crypto_generate_address(
 
   // sha256 twice
   digest_message(EVP_sha256(), buf3, buf1);
-  std::vector<unsigned char> buf5;
   digest_message(EVP_sha256(), buf1, buf2);
   
   // concatenate
@@ -293,15 +292,15 @@ void crypto_sign_data(
 {
   EVP_PKEY *pkey = NULL;
 
+  std::vector<unsigned char> private_key_buf = hex2bin(private_key);
+  crypto_load_private_key(private_key_buf, &pkey);
+
   /* Create the Message Digest Context */
   EVP_MD_CTX *mdctx = EVP_MD_CTX_create();
   if(!mdctx)
     throw std::runtime_error("Cannot create digest context");
   
   try {
-    std::vector<unsigned char> private_key_buf = hex2bin(private_key);
-    crypto_load_private_key(private_key_buf, &pkey);
-
     // Initialise the DigestSign operation - SHA-256 has been selected as the message digest function
     if(EVP_DigestSignInit(mdctx, NULL, EVP_sha256(), NULL, pkey) != 1)
       throw std::runtime_error("Cannot initialise SHA-256 signing");
@@ -394,13 +393,14 @@ void CRYPTO_generate_wallet(
   try {
     crypto_dump_public_key(pkey, wallet.public_key_buf);
     crypto_dump_private_key(pkey, wallet.private_key_buf);
-    crypto_generate_address(wallet.public_key_buf, wallet.mh_address_buf);
 
   } catch(...) {
     EVP_PKEY_free(pkey);
     throw;
   }
   if(pkey) EVP_PKEY_free(pkey);
+
+  crypto_generate_address(wallet.public_key_buf, wallet.mh_address_buf);
 }
 
 
@@ -466,4 +466,63 @@ bool CRYPTO_check_sign_data(
   const std::vector<unsigned char>& data)
 {
   return crypto_check_sign_data(sign, public_key, data.data(), data.size());
+}
+
+
+void CRYPTO_generate_public(
+  const std::string& private_key,
+  std::string& public_key,
+  const std::string& password)
+{
+  EVP_PKEY *pkey = NULL;
+  std::vector<unsigned char> private_key_buf, public_key_buf;
+
+  private_key_buf = hex2bin(private_key);
+  crypto_load_private_key(private_key_buf, &pkey);
+  
+  try {
+    crypto_dump_public_key(pkey, public_key_buf);
+
+  } catch(...) {
+    if(pkey) EVP_PKEY_free(pkey);
+    throw;
+  }
+
+  if(pkey) EVP_PKEY_free(pkey);
+
+  public_key = bin2hex(public_key_buf);
+}
+
+
+void CRYPTO_generate_address(
+  const std::string& public_key,
+  std::string& mh_address)
+{
+  std::vector<unsigned char> public_key_buf;
+  std::vector<unsigned char> mh_address_buf;
+
+  public_key_buf  = hex2bin(public_key);
+  crypto_generate_address(public_key_buf, mh_address_buf);
+  mh_address = bin2hex(mh_address_buf);
+}
+
+
+bool CRYPTO_check_address(
+  const std::string& mh_address)
+{
+  std::vector<unsigned char> buf1, buf2, mh_address_buf;
+
+  mh_address_buf  = hex2bin(mh_address);
+
+  buf1.assign(mh_address_buf.begin(), mh_address_buf.end() - 4);
+
+  // sha256 twice
+  digest_message(EVP_sha256(), buf1, buf2);
+  digest_message(EVP_sha256(), buf2, buf1);
+  
+  // compare checksum
+  buf1.resize(4);
+  buf2.assign(mh_address_buf.end() - 4, mh_address_buf.end());
+
+  return buf1 == buf2;
 }
