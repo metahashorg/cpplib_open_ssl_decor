@@ -1,7 +1,7 @@
 # cpplib_open_ssl_decor
 
 This repository contains Metahash wallet and signature c++ API sample code.
-For more details about Metahash address generation, please read the [article](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network#h_683619682421524476003219).
+For more details about Metahash address generation, please read the [article](https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network#h_683619682421524476003219).
 
 ## Get the source code
 Clone the repository by:
