@@ -510,6 +510,9 @@ void CRYPTO_generate_address(
 bool CRYPTO_check_address(
   const std::string& mh_address)
 {
+  if(mh_address.length() != 50)
+    return false;
+
   std::vector<unsigned char> buf1, buf2, mh_address_buf;
 
   mh_address_buf  = hex2bin(mh_address);
